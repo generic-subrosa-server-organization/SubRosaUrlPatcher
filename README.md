@@ -4,7 +4,7 @@ Pathes Sub Rosa Executables to use custom master servers.
 
 # Supported Versions:
 
-- [ ] 38e
+- [x] 38e
 - [x] 34c
 - [ ] 29a
 - [ ] 25d
@@ -14,6 +14,13 @@ Pathes Sub Rosa Executables to use custom master servers.
 ```sh
 node index.js path/to/exe hostname.net version
 ```
-* Version is optional, defaults to 38e
+*Version is optional, defaults to 38e
 
-thanks to @checkraisefold for showing me how this works
+example:
+```sh
+node index.js /home/user/subrosa/subrosa.exe master.example.com 38
+```
+
+# Credits
+
+thanks to @checkraisefold for showing me how this works. go play [rosaclassic](https://gart.sh/rosaclassic)!

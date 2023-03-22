@@ -3,6 +3,7 @@ import path from "path";
 
 const file = process.argv[2];
 const host = process.argv[3];
+let version = parseInt(process.argv[4]) as 38 | 34;
 
 if (!file) {
   throw new Error("Please provide a file path");
@@ -10,6 +11,20 @@ if (!file) {
 
 if (!host) {
   throw new Error("Please provide a host");
+}
+
+const validVersions = [38, 34];
+
+if (!validVersions.includes(version)) {
+  throw new Error(
+    `Version ${version} is not supported. Please provide a valid version. Valid versions are: ${validVersions.join(
+      ", "
+    )}`
+  );
+}
+
+if (!version) {
+  version = 38;
 }
 
 if (host.length > 17) {
@@ -22,30 +37,41 @@ const fileData = readFileSync(path.resolve(file), "binary");
 
 let location: number = 0;
 let length: number = 0;
+let mode = 0;
+
+const dict = {
+  38: [
+    [0x00274e8a, 19], // Windows: Client
+    [0x000f4280, 18], // Windows: Dedicated
+    [0x0015f6fd, 17], // Linux: Client
+    [0x000d6fe8, 17], // Linux: Dedicated
+  ],
+  34: [
+    [0x0012315c, 29], // Windows: Client
+    [0x00088ef8, 29], // Windows: Dedicated
+    [0x00115389, 17], // Linux: Client
+    [0x000a3c04, 17], // Linux: Dedicated
+  ],
+};
 
 if (file.endsWith("subrosa.exe")) {
   console.log("Mode: Windows: Client");
-
-  location = 0x0012315c;
-  length = 29;
+  mode = 0;
 } else if (file.endsWith("subrosa.x64")) {
   console.log("Mode: Linux: Client");
-
-  location = 0x00115389;
-  length = 17;
+  mode = 2;
 } else if (file.endsWith("subrosadedicated.exe")) {
   console.log("Mode: Windows: Dedicated");
-
-  location = 0x00088ef8;
-  length = 29;
+  mode = 1;
 } else if (file.endsWith("subrosadedicated.x64")) {
   console.log("Mode: Linux: Dedicated");
-
-  location = 0x000a3c04;
-  length = 18;
+  mode = 3;
 } else {
   throw new Error("File is not a Sub Rosa executable");
 }
+
+location = dict[version][mode][0];
+length = dict[version][mode][1];
 
 if (host.length > length) {
   throw new Error("Host is too long");
