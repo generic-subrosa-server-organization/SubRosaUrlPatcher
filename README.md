@@ -4,7 +4,7 @@ Pathes Sub Rosa Executables to use custom master servers.
 
 # Supported Versions:
 
-- [x] 38e
+- [x] 38f
 - [x] 34c
 - [ ] 29a
 - [ ] 25d
